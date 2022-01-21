@@ -56,8 +56,8 @@ def validate_harvest_data(
                 typer.secho(f'Harvest data analysis results:', fg=typer.colors.BRIGHT_GREEN)
 
                 typer.secho(validator.validate_multiple_measurements_for_one_crop(), fg=typer.colors.MAGENTA, )
-                typer.secho(validator.validate_dry_weight_deviations(), fg=typer.colors.CYAN, )
                 typer.secho(validator.validate_weights(), fg=typer.colors.BRIGHT_YELLOW, )
+                typer.secho(validator.validate_dry_weight_deviations(), fg=typer.colors.CYAN, )
                 typer.secho(validator.validate_farm_distances(), fg=typer.colors.BRIGHT_BLUE, )
             else:
                 farm_images.append(get_farm_images(file))

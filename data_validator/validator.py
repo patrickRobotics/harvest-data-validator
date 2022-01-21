@@ -109,6 +109,21 @@ class FarmDataValidator:
             violated_rule=ERRORS[DRY_WEIGHT_SD_VIOLATION],
         )
 
+    def validate_photos(self) -> dict:
+        """Returns images that violate duplicate photo submission"""
+        images_data = self._get_images_data()
+        duplicate_images = []
+        unique = set()
+        duplicates = [x for x in images_data if x in unique or unique.add(x)]
+        if len(duplicates) > 0:
+            for img in duplicates:
+                duplicate_images.append(img)
+
+            return FarmDataValidator._format_response(
+                data_point=duplicate_images,
+                violated_rule=ERRORS[DUPLICATE_PHOTOS_VIOLATION],
+            )
+
     def validate_farm_distances(self):
         """Returns data points where GPS coordinates of one farm are within 200 meters of another recorded farm"""
         invalid_data_points = []
@@ -126,25 +141,10 @@ class FarmDataValidator:
         for entry in seen:
             farm_1 = list(filter(lambda farm: farm['farm_id'] == entry[0], data))[0]
             farm_2 = list(filter(lambda farm: farm['farm_id'] == entry[1], data))[0]
-            invalid_data_points.append("{} and {}".format(farm_1, farm_2))
+            invalid_data_points.append("[{} ** is near ** {}]".format(farm_1, farm_2))
 
         return FarmDataValidator._format_response(
                 data_point=invalid_data_points,
                 violated_rule=ERRORS[FARM_DISTANCE_VIOLATION],
-            )
-
-    def validate_photos(self) -> dict:
-        """Returns images that violate duplicate photo submission"""
-        images_data = self._get_images_data()
-        duplicate_images = []
-        unique = set()
-        duplicates = [x for x in images_data if x in unique or unique.add(x)]
-        if len(duplicates) > 0:
-            for img in duplicates:
-                duplicate_images.append(img)
-
-            return FarmDataValidator._format_response(
-                data_point=duplicate_images,
-                violated_rule=ERRORS[DUPLICATE_PHOTOS_VIOLATION],
             )
 
